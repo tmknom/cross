@@ -50,6 +50,9 @@ func (a *App) Run(ctx context.Context, args []string) error {
 	// setup version option
 	a.rootCmd.SetVersionTemplate(AppVersion)
 
+	// setup sub commands
+	a.rootCmd.AddCommand(NewListCommand(a.IO))
+
 	return a.rootCmd.Execute()
 }
 
