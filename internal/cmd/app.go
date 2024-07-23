@@ -52,6 +52,7 @@ func (a *App) Run(ctx context.Context, args []string) error {
 
 	// setup sub commands
 	a.rootCmd.AddCommand(NewListCommand(a.IO))
+	a.rootCmd.AddCommand(NewExecCommand(a.IO))
 
 	return a.rootCmd.Execute()
 }

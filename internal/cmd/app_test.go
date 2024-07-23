@@ -24,6 +24,10 @@ func TestApp_Run(t *testing.T) {
 			input:    []string{"list", "--base", "../../", "--exclude", "tmp,.makefiles"},
 			expected: ".",
 		},
+		{
+			input:    []string{"exec", "--dir", ".", "--command", "pwd"},
+			expected: "cross/internal/cmd",
+		},
 	}
 
 	for _, tc := range cases {
