@@ -1,6 +1,8 @@
 package git
 
 import (
+	"errors"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/tmknom/cross/internal/errlib"
@@ -24,6 +26,17 @@ func OpenRepo(path string) (*Repository, error) {
 
 	result := &Repository{repo: repo, worktree: worktree}
 	return result, nil
+}
+
+func (r *Repository) Pull() error {
+	opts := &git.PullOptions{
+		RemoteName: "origin",
+	}
+	err := r.worktree.Pull(opts)
+	if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
+		return errlib.Wrapf(err, "cannot git pull: %#v", opts)
+	}
+	return nil
 }
 
 func (r *Repository) Add() error {
