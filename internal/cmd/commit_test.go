@@ -61,8 +61,8 @@ func executeGit(t *testing.T, workDir string, args []string) string {
 
 	err := cmd.Run()
 
-	logCommand(cmd)
 	if err != nil {
+		logCommand(cmd)
 		t.Fatalf(testlib.FormatError(err, nil, nil))
 	}
 	return cmd.Stdout.(*bytes.Buffer).String()
