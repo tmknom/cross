@@ -55,6 +55,7 @@ func (a *App) Run(ctx context.Context, args []string) error {
 	a.rootCmd.AddCommand(NewExecCommand(a.IO))
 	a.rootCmd.AddCommand(NewCommitCommand(a.IO))
 	a.rootCmd.AddCommand(NewPullCommand(a.IO))
+	a.rootCmd.AddCommand(NewPushCommand(a.IO))
 
 	return a.rootCmd.Execute()
 }
