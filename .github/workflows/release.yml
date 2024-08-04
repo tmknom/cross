@@ -11,15 +11,55 @@ on:
           - minor
           - major
         default: minor
+      version-file:
+        type: string
+        default: go.mod
+        required: false
+        description: Path to the version file for Go, such as .go-version, go.mod or go.work.
 
 concurrency: ${{ github.workflow }}
 
 permissions: {}
 
 jobs:
-  call:
-    uses: tmknom/release-workflows/.github/workflows/github-releases.yml@v0
-    with:
-      bump-level: ${{ inputs.bump-level }}
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: tmknom/checkout-action@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        with:
+          go-version-file: ${{ inputs.version-file }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Bump Version
+        id: bump
+        uses: tmknom/bump-version-action@87bed7f224292cab5b46a4cae9897bbf64153f00 # v0.2.1
+        with:
+          bump-level: ${{ inputs.bump-level }}
+
+      - name: Push Version Tag
+        uses: tmknom/push-version-tag-action@a9d1b46f9c29d3db510771452257b228bfd8a33f # v0.1.1
+        with:
+          version: ${{ steps.bump.outputs.version }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        with:
+          distribution: goreleaser
+          version: ~> v2
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
