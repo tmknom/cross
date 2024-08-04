@@ -2,8 +2,10 @@ package git
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/tmknom/cross/internal/errlib"
 )
@@ -59,6 +61,20 @@ func (r *Repository) Commit(message string) (string, error) {
 		return "", errlib.Wrapf(err, "cannot git commit: %#v", opts)
 	}
 	return hash.String(), nil
+}
+
+func (r *Repository) Push(branch string) error {
+	refSpec := config.RefSpec(fmt.Sprintf("+refs/heads/%s:refs/heads/%s", branch, branch))
+	opts := &git.PushOptions{
+		RemoteName: "origin",
+		RefSpecs:   []config.RefSpec{refSpec},
+		Force:      true,
+	}
+	err := r.repo.Push(opts)
+	if err != nil {
+		return errlib.Wrapf(err, "cannot git push: %#v", opts)
+	}
+	return nil
 }
 
 func (r *Repository) SwitchOrCreate(branch string) error {
