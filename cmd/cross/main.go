@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/tmknom/cross/internal/cmd"
-	"github.com/tmknom/cross/internal/term"
 )
 
 // Specify explicitly in ldflags
@@ -28,7 +27,7 @@ func main() {
 
 func run() error {
 	ctx := context.Background()
-	io := &term.IO{
+	io := &cmd.IO{
 		InReader:  os.Stdin,
 		OutWriter: os.Stdout,
 		ErrWriter: os.Stderr,

@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tmknom/cross/internal/term"
 	"github.com/tmknom/cross/internal/testlib"
 )
 
@@ -45,8 +44,8 @@ func TestApp_Run(t *testing.T) {
 	}
 }
 
-func FakeTestIO() *term.IO {
-	return &term.IO{
+func FakeTestIO() *IO {
+	return &IO{
 		InReader:  &bytes.Buffer{},
 		OutWriter: &bytes.Buffer{},
 		ErrWriter: os.Stderr,

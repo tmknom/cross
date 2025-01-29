@@ -10,10 +10,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tmknom/cross/internal/errlib"
-	"github.com/tmknom/cross/internal/term"
 )
 
-func NewExecCommand(io *term.IO) *cobra.Command {
+func NewExecCommand(io *IO) *cobra.Command {
 	opts := &execOptions{
 		IO: io,
 	}
@@ -41,7 +40,7 @@ func newExecRunner(opts *execOptions) *ExecRunner {
 type execOptions struct {
 	command string
 	dirs    []string
-	*term.IO
+	*IO
 }
 
 func (r *ExecRunner) run(ctx context.Context) error {
