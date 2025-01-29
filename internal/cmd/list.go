@@ -25,6 +25,7 @@ func NewListCommand(io *IO) *cobra.Command {
 		RunE:  func(cmd *cobra.Command, args []string) error { return runner.run(cmd.Context()) },
 	}
 	command.PersistentFlags().StringVarP(&opts.base, "base", "b", ".", "The base directory that contains repositories")
+	command.PersistentFlags().StringVarP(&opts.format, "format", "f", "default", "The output format (default, csv)")
 	command.PersistentFlags().StringSliceVarP(&opts.excludes, "exclude", "e", []string{}, "The exclude directories")
 	return command
 }
@@ -41,6 +42,7 @@ func newListRunner(opts *listOptions) *ListRunner {
 
 type listOptions struct {
 	base     string
+	format   string
 	excludes []string
 	*IO
 }
@@ -52,7 +54,7 @@ func (r *ListRunner) run(ctx context.Context) error {
 		return err
 	}
 
-	_, err = fmt.Fprintf(r.opts.OutWriter, "%s\n", strings.Join(dirs, "\n"))
+	_, err = fmt.Fprintln(r.opts.OutWriter, r.output(dirs))
 
 	return err
 }
@@ -75,8 +77,7 @@ func (r *ListRunner) listGitDirs() ([]string, error) {
 			}
 		}
 		if entry.Name() == ".git" {
-			rel, _ := filepath.Rel(base, path)
-			result = append(result, filepath.Clean(filepath.Dir(rel)))
+			result = append(result, filepath.Clean(filepath.Dir(path)))
 		}
 		return nil
 	})
@@ -84,4 +85,13 @@ func (r *ListRunner) listGitDirs() ([]string, error) {
 	sort.Strings(result)
 	log.Printf("Find dirs: %v", result)
 	return result, err
+}
+
+func (r *ListRunner) output(dirs []string) string {
+	switch r.opts.format {
+	case "csv":
+		return fmt.Sprintf(strings.Join(dirs, ","))
+	default:
+		return fmt.Sprintf(strings.Join(dirs, "\n"))
+	}
 }
