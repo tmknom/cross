@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/tmknom/cross/internal/dir"
 	"github.com/tmknom/cross/internal/testlib"
 )
 
@@ -17,7 +18,7 @@ func TestListRunner_listGitDirs(t *testing.T) {
 				base:     "../../",
 				excludes: []string{"tmp", ".makefiles"},
 			},
-			expected: []string{"."},
+			expected: []string{dir.NewBaseDir("../../").Abs()},
 		},
 	}
 
