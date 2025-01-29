@@ -7,10 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tmknom/cross/internal/git"
-	"github.com/tmknom/cross/internal/term"
 )
 
-func NewPullCommand(io *term.IO) *cobra.Command {
+func NewPullCommand(io *IO) *cobra.Command {
 	opts := &pullOptions{
 		IO: io,
 	}
@@ -38,7 +37,7 @@ func newPullRunner(opts *pullOptions) *PullRunner {
 type pullOptions struct {
 	branch string
 	dirs   []string
-	*term.IO
+	*IO
 }
 
 func (r *PullRunner) run(ctx context.Context) error {

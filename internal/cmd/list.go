@@ -12,10 +12,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tmknom/cross/internal/dir"
 	"github.com/tmknom/cross/internal/errlib"
-	"github.com/tmknom/cross/internal/term"
 )
 
-func NewListCommand(io *term.IO) *cobra.Command {
+func NewListCommand(io *IO) *cobra.Command {
 	opts := &listOptions{
 		IO: io,
 	}
@@ -43,7 +42,7 @@ func newListRunner(opts *listOptions) *ListRunner {
 type listOptions struct {
 	base     string
 	excludes []string
-	*term.IO
+	*IO
 }
 
 func (r *ListRunner) run(ctx context.Context) error {
