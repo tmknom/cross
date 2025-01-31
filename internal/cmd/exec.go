@@ -54,15 +54,10 @@ func (r *ExecRunner) run(ctx context.Context) error {
 }
 
 func (r *ExecRunner) executeAll(ctx context.Context) (string, error) {
-	name, args, err := r.parseCommand()
-	if err != nil {
-		return "", err
-	}
-
 	var b strings.Builder
 	for _, workdir := range r.opts.dirs {
 		log.Printf("execute: %s: %s", r.opts.command, workdir)
-		stdout, err := r.execute(ctx, name, args, workdir)
+		stdout, err := r.execute(ctx, workdir)
 		if err != nil {
 			return "", err
 		}
@@ -72,24 +67,11 @@ func (r *ExecRunner) executeAll(ctx context.Context) (string, error) {
 	return b.String(), nil
 }
 
-func (r *ExecRunner) parseCommand() (string, []string, error) {
-	elements := strings.Split(r.opts.command, " ")
-	if len(elements) == 0 {
-		return "", nil, fmt.Errorf("no command to execute")
-	}
-
-	name := elements[0]
-	if len(elements) == 1 {
-		return name, nil, nil
-	}
-	return name, elements[1:], nil
-}
-
-func (r *ExecRunner) execute(ctx context.Context, name string, args []string, workdir string) (string, error) {
+func (r *ExecRunner) execute(ctx context.Context, workdir string) (string, error) {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
 
-	cmd := exec.CommandContext(ctx, name, args...)
+	cmd := exec.CommandContext(ctx, "/usr/bin/env", []string{"bash", "-c", r.opts.command}...)
 	cmd.Dir = workdir
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
