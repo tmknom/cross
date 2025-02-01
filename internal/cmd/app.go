@@ -72,10 +72,10 @@ func (a *App) setupLog(args []string) {
 
 func (a *App) isDebug() bool {
 	switch os.Getenv("CROSS_DEBUG") {
-	case "true", "1", "yes":
-		return true
-	default:
+	case "false", "0", "no":
 		return false
+	default:
+		return true
 	}
 }
 
