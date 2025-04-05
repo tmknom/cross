@@ -18,7 +18,7 @@ permissions: {}
 
 jobs:
   call:
-    uses: tmknom/release-workflows/.github/workflows/go.yml@c828b3f16d93cced26547858bf2f73c9790f3099 # v0.10.0
+    uses: tmknom/release-workflows/.github/workflows/go.yml@53cbc08a8055b421e965769070a2beeacd807616 # v0.11.1
     with:
       bump-level: ${{ inputs.bump-level }}
     permissions:
